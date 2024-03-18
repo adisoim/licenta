@@ -15,12 +15,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('books.index');
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/books',function (){
+    return view('books.index');
+})->middleware(['auth'])->name('books.index');
+
+Route::get('/contacts',function (){
+    return view('contacts.index');
+})->middleware(['auth'])->name('contacts.index');
 
 Route::get('/admin', function () {
     return view('admin.index');

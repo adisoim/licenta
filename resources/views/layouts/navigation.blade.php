@@ -12,9 +12,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @auth
+                        @if(Auth::user()->hasRole('admin'))
+                            <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                                {{ __('Admin Panel') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
+                        <x-nav-link :href="route('books.index')" :active="request()->routeIs('books.index')">
+                            {{ __('Books') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.index')">
+                            {{ __('Contact') }}
+                        </x-nav-link>
                 </div>
             </div>
 
