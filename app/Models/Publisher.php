@@ -13,8 +13,8 @@ class Publisher extends Model
         'address',
         'phone'
     ];
-    public function books()
+    public function books(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        $this->hasMany(Book::class);
+        return $this->hasMany(Book::class);
     }
 }

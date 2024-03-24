@@ -15,7 +15,6 @@ class Contact extends Model
         'subject',
         'message'
     ];
-
     public function user()
     {
         $this->belongsTo(User::class);

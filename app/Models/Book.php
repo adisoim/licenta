@@ -37,4 +37,8 @@ class Book extends Model
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity');
     }
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
 }
