@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -22,8 +23,11 @@ class ContactController extends Controller
             'subject' => 'required',
             'message' => 'required'
         ]);
-        $user_id = auth()->user()->id;
-        $validatedData['user_id']=$user_id;
+
+        if(Auth::check()) {
+            $validatedData['user_id'] = Auth::id();
+        }
+
         Contact::create($validatedData);
 
         return redirect()->route('contacts.index')->with('success', 'Datele au fost trimise cu succes.');
