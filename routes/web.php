@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::get('/books', function () {
 Route::get('/contacts',function (){
     return view('contacts.index');
 })->name('contacts.index');
+
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
 
 Route::get('/admin', function () {
     return view('admin.index');
