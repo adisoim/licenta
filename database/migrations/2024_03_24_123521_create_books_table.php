@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('isbn');
             $table->string('title');
             $table->text('description');
-            $table->string('price');
+            $table->double('price');
             $table->string('path');
             $table->string('language');
-            $table->dateTime('release_date');
+            $table->date('release_date');
             $table->integer('pages');
             $table->unsignedBigInteger('publisher_id');
             $table->foreign('publisher_id')->references('id')->on('publishers');

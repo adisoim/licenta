@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublisherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,9 +34,32 @@ Route::get('/contacts',function (){
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
 
-Route::get('/admin', function () {
-    return view('admin.index');
-})->middleware(['auth', 'role:admin'])->name('admin.index');
+Route::get('/admin', [AdminController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.index');
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::patch('/books/{book}', [BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
+    Route::get('/authors/create', [AuthorController::class, 'create'])->name('authors.create');
+    Route::post('/authors', [AuthorController::class, 'store'])->name('authors.store');
+    Route::get('/authors/{author}/edit', [AuthorController::class, 'edit'])->name('authors.edit');
+    Route::patch('/authors/{author}', [AuthorController::class, 'update'])->name('authors.update');
+    Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('authors.destroy');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/publishers/create', [PublisherController::class, 'create'])->name('publishers.create');
+    Route::post('/publishers', [PublisherController::class, 'store'])->name('publishers.store');
+    Route::get('/publishers/{publisher}/edit', [PublisherController::class, 'edit'])->name('publishers.edit');
+    Route::patch('/publishers/{publisher}', [PublisherController::class, 'update'])->name('publishers.update');
+    Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy'])->name('publishers.destroy');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

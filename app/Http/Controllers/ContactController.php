@@ -4,17 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
     //
-    public function create(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function create(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('contacts.create');
     }
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
@@ -36,6 +40,6 @@ class ContactController extends Controller
     {
         $contact->delete();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Contactul a fost șters cu succes.');
+        return redirect()->route('admin.index')->with('success', 'Contactul a fost șters cu succes.');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Book extends Model
 {
@@ -14,30 +16,30 @@ class Book extends Model
         'title',
         'description',
         'price',
-        'image',
+        'path',
         'language',
         'release_date',
         'pages',
         'publisher_id'
     ];
 
-    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function authors(): BelongsToMany
     {
         return $this->belongsToMany(Author::class);
     }
-    public function publisher(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function publisher(): BelongsTo
     {
         return $this->belongsTo(Publisher::class);
     }
-    public function reviews(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function reviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class);
     }
-    public function orders(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity');
     }
-    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
