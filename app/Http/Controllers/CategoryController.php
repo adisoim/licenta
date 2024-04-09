@@ -9,10 +9,10 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    //
     public function create(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('categories.create');

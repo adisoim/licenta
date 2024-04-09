@@ -3,11 +3,14 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublisherController;
 use Illuminate\Support\Facades\Route;
+use Stripe\ApiOperations\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,15 +23,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('books.index');
-})->name('home');
+Route::get('/', [BookController::class, 'index'])->name('home');
 
-Route::get('/books', function () {
-    return view('books.index');
-})->name('books.index');
+Route::get('/books', [BookController::class, 'index'])
+    ->name('books.index');
 
-Route::get('/contacts',function (){
+// Ruta pentru afișarea coșului de cumpărături
+Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
+
+// Rutele pentru adăugarea, actualizarea și eliminarea produselor din coș
+Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('checkout');
+
+// Ruta pentru golirea întregului coș
+Route::post('/cart/empty', [CartController::class, 'empty'])->name('cart.empty');
+
+// Include această linie în fișierul de rute web.php
+Route::post('/order/place', [OrderController::class, 'place'])->name('order.place')->middleware('auth');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+
+Route::get('/books/{book}', [BookController::class, 'show'])
+    ->name('books.show');
+
+Route::get('/contacts', function () {
     return view('contacts.index');
 })->name('contacts.index');
 
@@ -39,7 +58,7 @@ Route::get('/admin', [AdminController::class, 'index'])
     ->name('admin.index');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
+    Route::get('/books-create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::patch('/books/{book}', [BookController::class, 'update'])->name('books.update');
@@ -67,4 +86,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

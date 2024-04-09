@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    //
     public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $books = Book::all();

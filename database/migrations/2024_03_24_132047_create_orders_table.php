@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedDecimal('total',10,2)->default(0);
-            $table->string('payment_method')->default('');
-            $table->string('payment_status')->default('pending');
+            $table->double('total',10,2)->default(0);
             $table->string('name');
             $table->string('phone');
             $table->string('email');

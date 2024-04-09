@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('book_order', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('book_id');
             $table->unsignedBigInteger('order_id');
             $table->integer('quantity')->default(1);
-            $table->timestamps();
 
-            $table->foreign('book_id')->references('id')->on('books');
-            $table->foreign('order_id')->references('id')->on('orders');
+            $table->primary(['book_id', 'order_id']); // Adaugă o cheie primară compusă
+
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books_orders');
+        Schema::dropIfExists('book_order');
     }
 };
