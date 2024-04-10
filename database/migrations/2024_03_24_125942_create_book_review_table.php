@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('review_id');
             $table->timestamps();
 
-            $table->foreign('book_id')->references('id')->on('books');
-            $table->foreign('review_id')->references('id')->on('reviews');
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
+            $table->foreign('review_id')->references('id')->on('reviews')->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books_reviews');
+        Schema::dropIfExists('book_review');
     }
 };

@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Stripe\ApiOperations\Request;
 
@@ -27,6 +28,12 @@ Route::get('/', [BookController::class, 'index'])->name('home');
 
 Route::get('/books', [BookController::class, 'index'])
     ->name('books.index');
+// web.php
+Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+// Rute pentru recenzii
+Route::delete('/review/{review}', [ReviewController::class, 'destroy'])
+    ->name('reviews.destroy')
+    ->middleware('auth');
 
 // Ruta pentru afișarea coșului de cumpărături
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
