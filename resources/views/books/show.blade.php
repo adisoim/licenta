@@ -1,9 +1,7 @@
 <x-app-layout>
     <div class="container mx-auto px-4 mt-8">
-        <!-- Detalii Carte -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-6 max-w-4xl mx-auto">
             <div class="flex flex-col md:flex-row">
-                <!-- Adjusting image container to fit the image nicely -->
                 <div class="md:w-1/4 flex justify-center items-start">
                     <img src="{{ asset($book->path) }}" alt="{{ $book->title }}"
                          class="object-contain rounded" style="max-height: 400px;">
@@ -29,7 +27,6 @@
         </div>
 
         @if(auth()->check())
-            <!-- Formular de Adăugare Recenzie -->
             <div class="bg-white rounded-lg shadow-lg p-8 mb-6 max-w-4xl mx-auto">
                 <h3 class="text-xl font-semibold mb-4">Adaugă o recenzie</h3>
                 <form action="{{ route('reviews.store', $book) }}" method="POST">
@@ -51,7 +48,6 @@
             </div>
         @endif
 
-        <!-- Recenzii Existente -->
         <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
             <h3 class="text-xl font-semibold mb-4">Recenzii</h3>
             @forelse ($book->reviews as $review)

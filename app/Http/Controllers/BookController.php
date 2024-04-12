@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    //
     public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $books = Book::all();
@@ -51,14 +50,12 @@ class BookController extends Controller
             'path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validează imaginea
         ]);
 
-        // Salvarea imaginii
         if ($request->hasFile('path')) {
             $image = $request->file('path');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/books'), $imageName);
         }
 
-        // Crearea și salvarea cărții
         $book = new Book([
             'isbn' => $validatedData['isbn'],
             'title' => $validatedData['title'],
@@ -67,13 +64,12 @@ class BookController extends Controller
             'language' => $validatedData['language'],
             'release_date' => $validatedData['release_date'],
             'pages' => $validatedData['pages'],
-            'publisher_id' => $validatedData['publisher'], // Adăugarea ID-ului editorului
-            'path' => $imageName ?? null, // Salvarea numelui fișierului imagine
+            'publisher_id' => $validatedData['publisher'],
+            'path' => $imageName ?? null,
         ]);
 
         $book->save();
 
-        // Adăugarea relațiilor
         $book->authors()->attach($validatedData['authors']);
         $book->categories()->attach($validatedData['categories']);
 
@@ -105,7 +101,6 @@ class BookController extends Controller
             'categories.*' => 'numeric|exists:categories,id',
         ]);
 
-        // Actualizarea cărții
         $book->update([
             'isbn' => $validatedData['isbn'],
             'title' => $validatedData['title'],
@@ -115,24 +110,20 @@ class BookController extends Controller
             'release_date' => $validatedData['release_date'],
             'pages' => $validatedData['pages'],
             'publisher_id' => $validatedData['publisher'],
-            // Aici nu includem 'path', deoarece va fi gestionat separat mai jos
         ]);
 
-        // Actualizează imaginea, dacă este furnizată
         if ($request->hasFile('path')) {
             $image = $request->file('path');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/books'), $imageName);
 
             $book->path = 'images/books/' . $imageName;
-            $book->save(); // Nu uita să salvezi schimbarea căii imaginii
+            $book->save();
         }
 
-        // Actualizează relațiile many-to-many pentru autori și categorii
         $book->authors()->sync($validatedData['authors']);
         $book->categories()->sync($validatedData['categories']);
 
-        // Redirectează utilizatorul către pagina de editare cu un mesaj de succes
         return redirect()->route('books.edit', $book)->with('success', 'Cartea a fost actualizată cu succes.');
     }
 

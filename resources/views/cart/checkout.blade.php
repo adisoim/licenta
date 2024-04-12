@@ -4,7 +4,6 @@
         <div class="bg-white rounded-lg shadow-lg overflow-hidden p-4 sm:p-8">
             <form action="{{ route('order.place') }}" method="POST" id="payment-form" class="space-y-4">
                 @csrf
-                <!-- Detalii de livrare și contact -->
                 <div class="grid grid-cols-1 gap-6">
                     <label for="name" class="block">
                         <span class="text-gray-700">Nume complet</span>
@@ -50,11 +49,9 @@
                 </div>
 
                 <div id="card-element" class="p-4 bg-gray-100 rounded shadow-sm">
-                    <!-- Un element Stripe va fi inserat aici. -->
                 </div>
                 <div id="card-errors" role="alert" class="text-red-500"></div>
 
-                <!-- Adaugă acest HTML înainte de butonul "Plasează comanda" -->
                 <div class="mb-4 text-right">
                     <p class="text-xl font-semibold">Total de plată: {{ $total }} lei</p>
                 </div>

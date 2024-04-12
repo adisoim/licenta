@@ -37,7 +37,6 @@ class CartController extends Controller
 
         $cart = session()->get('cart');
 
-        // dacă cart este gol, adăugați primul produs
         if (!$cart) {
             $cart = [
                 $id => [
@@ -51,11 +50,9 @@ class CartController extends Controller
             return redirect()->back()->with('success', 'Produs adăugat cu succes în coș!');
         }
 
-        // dacă produsul există deja în coș, creșteți cantitatea
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
-            // altfel, adăugați produsul cu cantitatea 1
             $cart[$id] = [
                 "title" => $book->title,
                 "quantity" => 1,

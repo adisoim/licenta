@@ -38,7 +38,6 @@ class ReviewPolicy
 
     public function delete(User $user, Review $review)
     {
-        // Aici poți adăuga logica suplimentară, de exemplu, să permiți administratorilor să șteargă orice recenzie
         return $user->id === $review->user_id;
     }
 

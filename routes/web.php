@@ -28,26 +28,22 @@ Route::get('/', [BookController::class, 'index'])->name('home');
 
 Route::get('/books', [BookController::class, 'index'])
     ->name('books.index');
-// web.php
+
 Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-// Rute pentru recenzii
+
 Route::delete('/review/{review}', [ReviewController::class, 'destroy'])
     ->name('reviews.destroy')
     ->middleware('auth');
 
-// Ruta pentru afișarea coșului de cumpărături
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
 
-// Rutele pentru adăugarea, actualizarea și eliminarea produselor din coș
 Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('checkout');
 
-// Ruta pentru golirea întregului coș
 Route::post('/cart/empty', [CartController::class, 'empty'])->name('cart.empty');
 
-// Include această linie în fișierul de rute web.php
 Route::post('/order/place', [OrderController::class, 'place'])->name('order.place')->middleware('auth');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 

@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
-    //
     public function create(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('contacts.create');

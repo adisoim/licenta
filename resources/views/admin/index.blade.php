@@ -43,7 +43,6 @@
                     @endforelse
                 </div>
 
-                <!-- Buton de adăugare carte -->
                 <div class="mt-4">
                     <a href="{{ route('books.create') }}"
                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Adăugare carte</a>
@@ -56,7 +55,6 @@
             <div class="bg-white rounded-lg shadow-lg p-4">
                 <h2 class="text-2xl font-semibold mb-4">Administrare Autori</h2>
 
-                <!-- Afișare autori -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @forelse($authors as $author)
                         <div class="bg-white rounded-lg shadow-lg p-4">
@@ -79,7 +77,6 @@
                     @endforelse
                 </div>
 
-                <!-- Buton de adăugare autor -->
                 <div class="mt-4">
                     <a href="{{ route('authors.create') }}"
                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Adăugare autor</a>
@@ -92,7 +89,6 @@
             <div class="bg-white rounded-lg shadow-lg p-4">
                 <h2 class="text-2xl font-semibold mb-4">Administrare Categorii</h2>
 
-                <!-- Afișare autori -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @forelse($categories as $category)
                         <div class="bg-white rounded-lg shadow-lg p-4">
@@ -114,7 +110,6 @@
                     @endforelse
                 </div>
 
-                <!-- Buton de adăugare categorie -->
                 <div class="mt-4">
                     <a href="{{ route('categories.create') }}"
                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Adăugare categorie</a>
@@ -127,7 +122,6 @@
             <div class="bg-white rounded-lg shadow-lg p-4">
                 <h2 class="text-2xl font-semibold mb-4">Administrare Edituri</h2>
 
-                <!-- Afișare edituri -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @forelse($publishers as $publisher)
                         <div class="bg-white rounded-lg shadow-lg p-4">
@@ -151,7 +145,6 @@
                     @endforelse
                 </div>
 
-                <!-- Buton de adăugare editura -->
                 <div class="mt-4">
                     <a href="{{ route('publishers.create') }}"
                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Adăugare editură</a>

@@ -27,11 +27,11 @@ class AuthorController extends Controller
         Author::create($validatedData);
         return redirect()->route('admin.index')->with('success', 'Autorul a fost adăugat cu succes.');
     }
-    public function edit(Author $author)
+    public function edit(Author $author): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('authors.edit', compact('author'));
     }
-    public function update(Request $request, Author $author)
+    public function update(Request $request, Author $author): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
@@ -41,7 +41,7 @@ class AuthorController extends Controller
         $author->update($validatedData);
         return redirect()->route('authors.edit', $author)->with('success', 'Datele au fost actualizate cu succes.');
     }
-    public function destroy(Author $author)
+    public function destroy(Author $author): RedirectResponse
     {
         $author->delete();
         return redirect()->route('admin.index')->with('success', 'Autorul a fost șters cu succes.');
