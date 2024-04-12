@@ -3,11 +3,12 @@
         <!-- Detalii Carte -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-6 max-w-4xl mx-auto">
             <div class="flex flex-col md:flex-row">
-                <div class="md:w-1/3 mr-8 mb-4 md:mb-0">
-                    <img src="{{ Storage::url($book->path) }}" alt="{{ $book->title }}"
-                         class="object-cover w-full h-48">
+                <!-- Adjusting image container to fit the image nicely -->
+                <div class="md:w-1/4 flex justify-center items-start">
+                    <img src="{{ asset($book->path) }}" alt="{{ $book->title }}"
+                         class="object-contain rounded" style="max-height: 400px;">
                 </div>
-                <div class="md:w-2/3">
+                <div class="md:w-3/4 md:pl-8">
                     <h2 class="text-3xl font-semibold mb-4">{{ $book->title }}</h2>
                     <p class="text-gray-600 mb-4"><strong>ISBN:</strong> {{ $book->isbn }}</p>
                     <p class="text-gray-600 mb-4"><strong>Preț:</strong> {{ $book->price }} lei</p>

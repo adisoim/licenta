@@ -35,7 +35,7 @@ class BookController extends Controller
         return view('books.create',compact('authors', 'publishers', 'categories'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'isbn' => 'required|numeric',
@@ -124,7 +124,7 @@ class BookController extends Controller
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/books'), $imageName);
 
-            $book->path = $imageName;
+            $book->path = 'images/books/' . $imageName;
             $book->save(); // Nu uita să salvezi schimbarea căii imaginii
         }
 
