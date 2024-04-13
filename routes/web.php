@@ -26,14 +26,11 @@ use Stripe\ApiOperations\Request;
 
 Route::get('/', [BookController::class, 'index'])->name('home');
 
-Route::get('/books', [BookController::class, 'index'])
-    ->name('books.index');
+Route::get('/books', [BookController::class, 'index'])->name('books.index');
 
 Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
-Route::delete('/review/{review}', [ReviewController::class, 'destroy'])
-    ->name('reviews.destroy')
-    ->middleware('auth');
+Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('auth');
 
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
 
@@ -47,8 +44,7 @@ Route::post('/cart/empty', [CartController::class, 'empty'])->name('cart.empty')
 Route::post('/order/place', [OrderController::class, 'place'])->name('order.place')->middleware('auth');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
-Route::get('/books/{book}', [BookController::class, 'show'])
-    ->name('books.show');
+Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
 
 Route::get('/contacts', function () {
     return view('contacts.index');
@@ -56,9 +52,7 @@ Route::get('/contacts', function () {
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
 
-Route::get('/admin', [AdminController::class, 'index'])
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.index');
+Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'role:admin'])->name('admin.index');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/books-create', [BookController::class, 'create'])->name('books.create');
