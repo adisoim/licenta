@@ -21,7 +21,8 @@ class Book extends Model
         'release_date',
         'pages',
         'publisher_id',
-        'discount'
+        'discount',
+        'pdf_path'
     ];
 
     public function authors(): BelongsToMany

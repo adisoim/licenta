@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublisherController;
@@ -34,6 +35,8 @@ Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('
 Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('auth');
 
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
+
+Route::get('/download/{path}', [FileController::class, 'download'])->name('download')->middleware('auth');
 
 Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');

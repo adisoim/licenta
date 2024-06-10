@@ -46,10 +46,22 @@ class BookController extends Controller
         }
 
         $books = $query->get();
-        $authors = Author::all();
-        $categories = Category::all();
-        $publishers = Publisher::all();
-        $languages = Book::select('language')->distinct()->pluck('language');
+
+        // Obțineți doar autori, categorii, edituri și limbi care sunt legate de cărțile găsite
+        $authors = Author::whereHas('book', function ($query) use ($books) {
+            $query->whereIn('books.id', $books->pluck('id'));
+        })->get();
+
+        $categories = Category::whereHas('books', function ($query) use ($books) {
+            $query->whereIn('books.id', $books->pluck('id'));
+        })->get();
+
+        $publishers = Publisher::whereHas('books', function ($query) use ($books) {
+            $query->whereIn('books.id', $books->pluck('id'));
+        })->get();
+
+        $languages = $books->pluck('language')->unique();
+
         return view('books.index', compact('books', 'authors', 'categories', 'publishers', 'languages'));
     }
 
@@ -76,31 +88,28 @@ class BookController extends Controller
             'language' => 'required',
             'release_date' => 'required|date',
             'pages' => 'required|integer',
-            'publisher' => 'required|exists:publishers,id', // Asigură-te că editorul există
-            'authors' => 'required|exists:authors,id', // Validează autorii
-            'categories' => 'required|exists:categories,id', // Validează categoriile
-            'path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validează imaginea
+            'publisher' => 'required|exists:publishers,id',
+            'authors' => 'required|exists:authors,id',
+            'categories' => 'required|exists:categories,id',
+            'path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'pdf_path' => 'nullable|file|mimes:pdf|max:10000', // Validează fișierul PDF
         ]);
 
         if ($request->hasFile('path')) {
             $image = $request->file('path');
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/books'), $imageName);
+            $validatedData['path'] = 'images/books/' . $imageName;
         }
 
-        $book = new Book([
-            'isbn' => $validatedData['isbn'],
-            'title' => $validatedData['title'],
-            'description' => $validatedData['description'],
-            'price' => $validatedData['price'],
-            'language' => $validatedData['language'],
-            'release_date' => $validatedData['release_date'],
-            'pages' => $validatedData['pages'],
-            'publisher_id' => $validatedData['publisher'],
-            'path' => $imageName ?? null,
-        ]);
+        if ($request->hasFile('pdf_path')) {
+            $pdf = $request->file('pdf_path');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move(public_path('pdfs/books'), $pdfName);
+            $validatedData['pdf_path'] = 'pdfs/books/' . $pdfName;
+        }
 
-        $book->save();
+        $book = Book::create($validatedData);
 
         $book->authors()->attach($validatedData['authors']);
         $book->categories()->attach($validatedData['categories']);
@@ -131,7 +140,8 @@ class BookController extends Controller
             'authors.*' => 'numeric|exists:authors,id',
             'categories' => 'required|array',
             'categories.*' => 'numeric|exists:categories,id',
-            'discount' => 'nullable|numeric|min:0|max:100'
+            'discount' => 'nullable|numeric|min:0|max:100',
+            'pdf_path' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $book->update([
@@ -152,6 +162,14 @@ class BookController extends Controller
             $image->move(public_path('images/books'), $imageName);
 
             $book->path = 'images/books/' . $imageName;
+            $book->save();
+        }
+
+        if ($request->hasFile('pdf_path')) {
+            $pdf = $request->file('pdf_path');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move(public_path('pdfs/books'), $pdfName);
+            $book->pdf_path = 'pdfs/books/' . $pdfName;
             $book->save();
         }
 

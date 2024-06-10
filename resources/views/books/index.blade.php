@@ -42,27 +42,22 @@
             </div>
         </form>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
             @foreach($books as $book)
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 225px;">
-                    <div class="mt-4 relative">
-                        <a href="{{ route('books.show', $book) }}">
-                            <img src="{{ asset($book->path) }}" alt="{{ $book->title }}" class="w-full object-contain"
-                                 style="height: 225px;">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden col-span-1">
+                    <div class="relative h-80 flex justify-center items-center">
+                        <a href="{{ route('books.show', $book) }}" class="block h-full">
+                            <img src="{{ asset($book->path) }}" alt="{{ $book->title }}" class="w-full h-full object-contain p-2">
                         </a>
-                        <a href="#" class="wishlist-button" data-book-id="{{ $book->id }}">
-                            <svg
-                                class="absolute top-2 right-2 w-6 h-6 text-gray-400 hover:text-red-500 transition-colors duration-200 transform"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 5.656L10 16.828l-6.828-6.828a4 4 0 010-5.656z"/>
+                        <a href="#" class="wishlist-button absolute top-2 right-2" data-book-id="{{ $book->id }}">
+                            <svg class="w-6 h-6 text-gray-400 hover:text-red-500 transition-colors duration-200 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 5.656L10 16.828l-6.828-6.828a4 4 0 010-5.656z"/>
                             </svg>
                         </a>
                     </div>
-                    <div class="p-4 flex flex-col justify-between" style="height: 155px;">
+                    <div class="p-4 flex flex-col justify-between h-48">
                         <div>
-                            <a href="{{ route('books.show', $book) }}"
-                               class="text-lg font-semibold">{{ $book->title }}</a>
+                            <a href="{{ route('books.show', $book) }}" class="text-lg font-semibold">{{ $book->title }}</a>
                             @foreach ($book->authors as $author)
                                 <p class="text-gray-600 text-sm">{{ $author->name }}</p>
                             @endforeach
