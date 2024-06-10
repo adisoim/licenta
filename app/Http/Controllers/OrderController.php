@@ -3,8 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use App\Models\Book;
+use App\Models\Category;
+use App\Models\Contact;
 use App\Models\Order;
+use App\Models\Publisher;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +22,41 @@ use Stripe\Stripe;
 
 class OrderController extends Controller
 {
+    public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $orders = Order::with('user', 'books')->get();
+
+        $books = Book::all();
+        $authors = Author::all();
+        $categories = Category::all();
+        $publishers = Publisher::all();
+        $contacts = Contact::all();
+
+        return view('admin.index', compact('books', 'authors', 'categories', 'publishers', 'orders', 'contacts'));
+    }
+
+    public function show(Order $order): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $order->load('books');
+        return view('orders.show', compact('order'));
+    }
+
+    public function destroy(): RedirectResponse
+    {
+        $order = Order::find(request('order'));
+        $order->delete();
+
+        return redirect()->route('admin.index')->with('success', 'Comanda a fost ștearsă cu succes.');
+    }
+
+    public function userOrders(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $userId = auth()->id(); // Obținerea ID-ului utilizatorului autentificat
+        $orders = Order::where('user_id', $userId)->with('books')->orderBy('created_at', 'desc')->get();
+
+        return view('orders.user', compact('orders')); // Returnarea unei vederi cu comenzile utilizatorului
+    }
+
     public function place(Request $request): RedirectResponse
     {
         $validated = $request->validate([

@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'user_id',
         'total',
         'name',
@@ -21,10 +22,12 @@ class Order extends Model
         'postal_code',
         'note'
     ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)->withPivot('quantity');

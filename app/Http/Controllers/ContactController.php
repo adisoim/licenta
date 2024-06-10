@@ -35,7 +35,7 @@ class ContactController extends Controller
 
         return redirect()->route('contacts.index')->with('success', 'Datele au fost trimise cu succes.');
     }
-    public function destroy(Contact $contact)
+    public function destroy(Contact $contact): RedirectResponse
     {
         $contact->delete();
 

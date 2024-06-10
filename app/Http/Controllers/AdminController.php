@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Order;
 use App\Models\Publisher;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -20,6 +22,8 @@ class AdminController extends Controller
         $authors = Author::all();
         $categories = Category::all();
         $publishers = Publisher::all();
-        return view('admin.index', compact('books','authors','categories','publishers'));
+        $contacts = Contact::all();
+        $orders = Order::with('user')->get();
+        return view('admin.index', compact('books','authors','categories','publishers','contacts','orders'));
     }
 }

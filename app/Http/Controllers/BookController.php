@@ -15,10 +15,42 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        $books = Book::all();
-        return view('books.index', compact('books'));
+        $query = Book::query();
+
+        if ($request->filled('author')) {
+            $query->whereHas('authors', function ($query) use ($request) {
+                $query->where('authors.id', $request->author);
+            });
+        }
+
+        if ($request->filled('price')) {
+            $query->where('price', '<=', $request->price);
+        }
+
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($query) use ($request) {
+                $query->where('categories.id', $request->category);
+            });
+        }
+
+        if ($request->filled('publisher')) {
+            $query->whereHas('publisher', function ($query) use ($request) {
+                $query->where('publishers.id', $request->publisher);
+            });
+        }
+
+        if ($request->filled('language')) {
+            $query->where('language', $request->language);
+        }
+
+        $books = $query->get();
+        $authors = Author::all();
+        $categories = Category::all();
+        $publishers = Publisher::all();
+        $languages = Book::select('language')->distinct()->pluck('language');
+        return view('books.index', compact('books', 'authors', 'categories', 'publishers', 'languages'));
     }
 
     public function show(Book $book): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
@@ -31,7 +63,7 @@ class BookController extends Controller
         $authors = Author::all();
         $publishers = Publisher::all();
         $categories = Category::all();
-        return view('books.create',compact('authors', 'publishers', 'categories'));
+        return view('books.create', compact('authors', 'publishers', 'categories'));
     }
 
     public function store(Request $request): RedirectResponse

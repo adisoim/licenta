@@ -25,20 +25,24 @@ class Book extends Model
 
     public function authors(): BelongsToMany
     {
-        return $this->belongsToMany(Author::class);
+        return $this->belongsToMany(Author::class, 'author_book', 'book_id', 'author_id');
     }
+
     public function publisher(): BelongsTo
     {
         return $this->belongsTo(Publisher::class);
     }
+
     public function reviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class);
     }
+
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity');
     }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);

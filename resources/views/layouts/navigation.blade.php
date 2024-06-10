@@ -15,18 +15,18 @@
                     @auth
                         @if(Auth::user()->hasRole('admin'))
                             <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
-                                {{ __('Admin Panel') }}
+                                {{ __('Panou administrator') }}
                             </x-nav-link>
                         @endif
                     @endauth
                         <x-nav-link :href="route('books.index')" :active="request()->routeIs('books.index')">
-                            {{ __('Books') }}
+                            {{ __('Carti') }}
                         </x-nav-link>
                         <x-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.index')">
                             {{ __('Contact') }}
                         </x-nav-link>
                         <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-                            {{ __('Cart') }}
+                            {{ __('Cos de cumparaturi') }}
                         </x-nav-link>
                 </div>
             </div>
@@ -50,6 +50,10 @@
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('orders.user')">
+                            {{__('View Orders')}}
                         </x-dropdown-link>
 
                         <!-- Authentication -->

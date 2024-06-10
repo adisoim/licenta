@@ -51,8 +51,13 @@ Route::get('/contacts', function () {
 })->name('contacts.index');
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
+Route::delete('/contact/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'role:admin'])->name('admin.index');
+Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth','role:admin'])->name('orders.index');
+Route::get('/orders{order}', [OrderController::class, 'show'])->middleware(['auth','role:admin'])->name('orders.show');
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware(['auth','role:admin'])->name('orders.destroy');
+Route::get('/my-orders', [OrderController::class, 'userOrders'])->middleware('auth')->name('orders.user');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/books-create', [BookController::class, 'create'])->name('books.create');
