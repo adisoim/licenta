@@ -33,7 +33,7 @@
                         <button
                             class="wishlist-button bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             data-book-id="{{ $book->id }}">
-                            Adăugă în Wishlist
+                            Adăugă în lista de dorințe
                         </button>
                     </div>
                 </div>
