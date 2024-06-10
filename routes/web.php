@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Stripe\ApiOperations\Request;
 
@@ -50,13 +51,18 @@ Route::get('/contacts', function () {
     return view('contacts.index');
 })->name('contacts.index');
 
+Route::get('/wishlists', [WishlistController::class, 'index'])->name('wishlists.index')->middleware('auth');
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlists.add')->middleware('auth');
+Route::delete('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlists.remove')->middleware('auth');
+Route::post('cart/add/{book}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
 Route::delete('/contact/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'role:admin'])->name('admin.index');
-Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth','role:admin'])->name('orders.index');
-Route::get('/orders{order}', [OrderController::class, 'show'])->middleware(['auth','role:admin'])->name('orders.show');
-Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware(['auth','role:admin'])->name('orders.destroy');
+Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth', 'role:admin'])->name('orders.index');
+Route::get('/orders{order}', [OrderController::class, 'show'])->middleware(['auth', 'role:admin'])->name('orders.show');
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware(['auth', 'role:admin'])->name('orders.destroy');
 Route::get('/my-orders', [OrderController::class, 'userOrders'])->middleware('auth')->name('orders.user');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
