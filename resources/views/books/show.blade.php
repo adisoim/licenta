@@ -9,7 +9,15 @@
                 <div class="md:w-3/4 md:pl-8">
                     <h2 class="text-3xl font-semibold mb-4">{{ $book->title }}</h2>
                     <p class="text-gray-600 mb-4"><strong>ISBN:</strong> {{ $book->isbn }}</p>
-                    <p class="text-gray-600 mb-4"><strong>Preț:</strong> {{ $book->price }} lei</p>
+                    <p class="text-gray-600 mb-4">
+                        <strong>Preț:</strong>
+                        @if ($book->discount > 0)
+                            <span class="line-through">{{ $book->price }} lei</span>
+                            <span>{{ $book->price - ($book->price * $book->discount / 100) }} lei</span>
+                        @else
+                            <span>{{ $book->price }} lei</span>
+                        @endif
+                    </p>
                     <p class="text-gray-600 mb-4"><strong>Limbă:</strong> {{ $book->language }}</p>
                     <p class="text-gray-600 mb-4"><strong>Data lansării:</strong> {{ $book->release_date }}</p>
                     <p class="text-gray-600 mb-4"><strong>Număr de pagini:</strong> {{ $book->pages }}</p>
@@ -22,7 +30,9 @@
                                 Adăugă în Coș
                             </button>
                         </form>
-                        <button class="wishlist-button bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-book-id="{{ $book->id }}">
+                        <button
+                            class="wishlist-button bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            data-book-id="{{ $book->id }}">
                             Adăugă în Wishlist
                         </button>
                     </div>

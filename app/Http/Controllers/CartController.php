@@ -35,6 +35,8 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Produsul nu există.');
         }
 
+        $price = $book->discount > 0 ? $book->price - ($book->price * $book->discount / 100) : $book->price;
+
         $cart = session()->get('cart');
 
         if (!$cart) {
@@ -42,7 +44,7 @@ class CartController extends Controller
                 $id => [
                     "title" => $book->title,
                     "quantity" => 1,
-                    "price" => $book->price,
+                    "price" => $price,
                     "path" => $book->path
                 ]
             ];
@@ -56,7 +58,7 @@ class CartController extends Controller
             $cart[$id] = [
                 "title" => $book->title,
                 "quantity" => 1,
-                "price" => $book->price,
+                "price" => $price,
                 "path" => $book->path
             ];
         }

@@ -68,7 +68,14 @@
                             @endforeach
                         </div>
                         <div>
-                            <p class="text-gray-600">Pret: {{ $book->price }} lei</p>
+                            <p class="text-gray-600">
+                                @if ($book->discount > 0)
+                                    <span class="line-through">{{ $book->price }} lei</span>
+                                    <span>{{ $book->price - ($book->price * $book->discount / 100) }} lei</span>
+                                @else
+                                    <span>{{ $book->price }} lei</span>
+                                @endif
+                            </p>
                             <form action="{{ route('cart.add', $book->id) }}" method="POST">
                                 @csrf
                                 <button type="submit"

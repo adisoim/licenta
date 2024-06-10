@@ -20,7 +20,8 @@ class Book extends Model
         'language',
         'release_date',
         'pages',
-        'publisher_id'
+        'publisher_id',
+        'discount'
     ];
 
     public function authors(): BelongsToMany

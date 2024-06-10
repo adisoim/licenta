@@ -131,6 +131,7 @@ class BookController extends Controller
             'authors.*' => 'numeric|exists:authors,id',
             'categories' => 'required|array',
             'categories.*' => 'numeric|exists:categories,id',
+            'discount' => 'nullable|numeric|min:0|max:100'
         ]);
 
         $book->update([
@@ -142,6 +143,7 @@ class BookController extends Controller
             'release_date' => $validatedData['release_date'],
             'pages' => $validatedData['pages'],
             'publisher_id' => $validatedData['publisher'],
+            'discount' => $validatedData['discount'],
         ]);
 
         if ($request->hasFile('path')) {
