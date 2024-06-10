@@ -28,11 +28,18 @@ class WishlistController extends Controller
         $userId = Auth::id();
         $bookId = $request->input('book_id');
 
-        Wishlist::updateOrCreate(
-            ['user_id' => $userId, 'book_id' => $bookId]
-        );
+        $wishlist = Wishlist::where('user_id', $userId)->where('book_id', $bookId)->first();
 
-        return response()->json(['success' => true]);
+        if ($wishlist) {
+            $wishlist->delete();
+            return response()->json(['success' => true, 'action' => 'removed']);
+        } else {
+            Wishlist::create([
+                'user_id' => $userId,
+                'book_id' => $bookId,
+            ]);
+            return response()->json(['success' => true, 'action' => 'added']);
+        }
     }
 
     public function remove(Request $request): RedirectResponse

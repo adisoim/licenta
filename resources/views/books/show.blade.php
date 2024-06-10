@@ -11,17 +11,21 @@
                     <p class="text-gray-600 mb-4"><strong>ISBN:</strong> {{ $book->isbn }}</p>
                     <p class="text-gray-600 mb-4"><strong>Preț:</strong> {{ $book->price }} lei</p>
                     <p class="text-gray-600 mb-4"><strong>Limbă:</strong> {{ $book->language }}</p>
-                    <p class="text-gray-600 mb-4"><strong>Data
-                            lansării:</strong> {{ $book->release_date }}</p>
+                    <p class="text-gray-600 mb-4"><strong>Data lansării:</strong> {{ $book->release_date }}</p>
                     <p class="text-gray-600 mb-4"><strong>Număr de pagini:</strong> {{ $book->pages }}</p>
                     <p class="text-gray-600 mb-4"><strong>Descriere:</strong> {{ $book->description }}</p>
-                    <form action="{{ route('cart.add', $book->id) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
-                            Adăugă în Coș
+                    <div class="flex space-x-2">
+                        <form action="{{ route('cart.add', $book->id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Adăugă în Coș
+                            </button>
+                        </form>
+                        <button class="wishlist-button bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" data-book-id="{{ $book->id }}">
+                            Adăugă în Wishlist
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,4 +75,42 @@
             @endforelse
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.wishlist-button').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const bookId = this.getAttribute('data-book-id');
+
+                fetch('{{ route("wishlists.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({book_id: bookId})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const button = document.querySelector(`.wishlist-button[data-book-id="${bookId}"]`);
+                            if (data.action === 'added') {
+                                button.textContent = 'Șterge din Wishlist';
+                                button.classList.remove('bg-gray-500', 'hover:bg-gray-700');
+                                button.classList.add('bg-red-500', 'hover:bg-red-700');
+                            } else {
+                                button.textContent = 'Adăugă în Wishlist';
+                                button.classList.remove('bg-red-500', 'hover:bg-red-700');
+                                button.classList.add('bg-gray-500', 'hover:bg-gray-700');
+                            }
+                        } else {
+                            alert('Eroare la gestionarea wishlist-ului.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+    </script>
 </x-app-layout>

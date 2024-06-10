@@ -29,7 +29,7 @@
                                 <input type="hidden" name="book_id" value="{{ $item->book_id }}">
                                 <button type="submit"
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                                    Șterge din wishlist
+                                    Șterge din lista ta de dorințe
                                 </button>
                             </form>
                             <form action="{{ route('cart.add', $item->book_id) }}" method="POST">
