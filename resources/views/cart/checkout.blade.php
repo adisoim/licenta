@@ -35,12 +35,6 @@
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </label>
 
-                    <label for="postal_code" class="block">
-                        <span class="text-gray-700">Cod poștal</span>
-                        <input type="text" name="postal_code" id="postal_code" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </label>
-
                     <label for="note" class="block">
                         <span class="text-gray-700">Notă comandă (opțional)</span>
                         <textarea name="note" id="note" rows="3"

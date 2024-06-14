@@ -1,51 +1,56 @@
 <x-app-layout>
-    <div class="container mx-auto px-8 mt-8">
-        <form method="GET">
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
-                <select name="author" class="form-select rounded-md shadow-sm col-span-1">
-                    <option value="">Alege un autor</option>
-                    @foreach ($authors as $author)
-                        <option value="{{ $author->id }}" {{ request('author') == $author->id ? 'selected' : '' }}>
-                            {{ $author->name }}
-                        </option>
-                    @endforeach
-                </select>
-
-                <select name="category" class="form-select rounded-md shadow-sm col-span-1">
-                    <option value="">Alege o categorie</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-
-                <select name="publisher" class="form-select rounded-md shadow-sm col-span-1">
-                    <option value="">Alege o editură</option>
-                    @foreach ($publishers as $publisher)
-                        <option value="{{ $publisher->id }}">{{ $publisher->name }}</option>
-                    @endforeach
-                </select>
-
-                <select name="language" class="form-select rounded-md shadow-sm col-span-1">
-                    <option value="">Alege o limbă</option>
-                    @foreach ($languages as $language)
-                        <option value="{{ $language }}">{{ $language }}</option>
-                    @endforeach
-                </select>
-
-                <input type="number" name="price" placeholder="Preț maxim"
-                       class="form-input rounded-md shadow-sm col-span-1">
-
-                <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded col-span-1">
-                    Filtrează
-                </button>
+    <div class="container mx-auto px-2 mt-8 flex space-x-4">
+        <form method="GET" class="w-1/8 space-y-4 sticky top-0">
+            <h2 class="text-lg font-bold mb-4 text-white">Filtrează Cărțile</h2>
+            <div class="border p-4 rounded-md shadow-md bg-white">
+                <h3 class="font-semibold mb-2">Autor</h3>
+                @foreach ($authors as $author)
+                    <div class="flex items-center">
+                        <input type="checkbox" name="author" value="{{ $author->id }}" class="mr-2">
+                        <label>{{ $author->name }}</label>
+                    </div>
+                @endforeach
             </div>
+            <div class="border p-4 rounded-md shadow-md bg-white">
+                <h3 class="font-semibold mb-2">Categorie</h3>
+                @foreach ($categories as $category)
+                    <div class="flex items-center">
+                        <input type="checkbox" name="category" value="{{ $category->id }}" class="mr-2">
+                        <label>{{ $category->name }}</label>
+                    </div>
+                @endforeach
+            </div>
+            <div class="border p-4 rounded-md shadow-md bg-white">
+                <h3 class="font-semibold mb-2">Editură</h3>
+                @foreach ($publishers as $publisher)
+                    <div class="flex items-center">
+                        <input type="checkbox" name="publisher" value="{{ $publisher->id }}" class="mr-2">
+                        <label>{{ $publisher->name }}</label>
+                    </div>
+                @endforeach
+            </div>
+            <div class="border p-4 rounded-md shadow-md bg-white">
+                <h3 class="font-semibold mb-2">Limbă</h3>
+                @foreach ($languages as $language)
+                    <div class="flex items-center">
+                        <input type="checkbox" name="language" value="{{ $language }}" class="mr-2">
+                        <label>{{ $language }}</label>
+                    </div>
+                @endforeach
+            </div>
+            <div class="border p-4 rounded-md shadow-md bg-white">
+                <h3 class="font-semibold mb-2">Preț maxim</h3>
+                <input type="number" name="price" placeholder="Preț maxim" class="form-input rounded-md shadow-sm w-full bg-gray-100">
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                Filtrează
+            </button>
         </form>
 
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-4/5">
             @foreach($books as $book)
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden col-span-1">
-                    <div class="relative h-80 flex justify-center items-center">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden h-auto flex flex-col justify-between" style="height: 400px;">
+                    <div class="relative h-48 flex justify-center items-center">
                         <a href="{{ route('books.show', $book) }}" class="block h-full">
                             <img src="{{ asset($book->path) }}" alt="{{ $book->title }}" class="w-full h-full object-contain p-2">
                         </a>
@@ -55,30 +60,27 @@
                             </svg>
                         </a>
                     </div>
-                    <div class="p-4 flex flex-col justify-between h-48">
-                        <div>
-                            <a href="{{ route('books.show', $book) }}" class="text-lg font-semibold">{{ $book->title }}</a>
-                            @foreach ($book->authors as $author)
-                                <p class="text-gray-600 text-sm">{{ $author->name }}</p>
-                            @endforeach
-                        </div>
-                        <div>
-                            <p class="text-gray-600">
-                                @if ($book->discount > 0)
-                                    <span class="line-through">{{ $book->price }} lei</span>
-                                    <span>{{ $book->price - ($book->price * $book->discount / 100) }} lei</span>
-                                @else
-                                    <span>{{ $book->price }} lei</span>
-                                @endif
-                            </p>
-                            <form action="{{ route('cart.add', $book->id) }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-2">
-                                    Adăugă în Coș
-                                </button>
-                            </form>
-                        </div>
+                    <div class="p-4 flex-grow">
+                        <a href="{{ route('books.show', $book) }}" class="text-lg font-semibold">{{ $book->title }}</a>
+                        @foreach ($book->authors as $author)
+                            <p class="text-gray-600 text-sm">{{ $author->name }}</p>
+                        @endforeach
+                        <p class="text-gray-600">
+                            @if ($book->discount > 0)
+                                <span class="line-through">{{ $book->price }} lei</span>
+                                <span>{{ $book->price - ($book->price * $book->discount / 100) }} lei</span>
+                            @else
+                                <span>{{ $book->price }} lei</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="p-4">
+                        <form action="{{ route('cart.add', $book->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                                Adăugă în Coș
+                            </button>
+                        </form>
                     </div>
                 </div>
             @endforeach

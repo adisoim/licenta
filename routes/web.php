@@ -42,6 +42,7 @@ Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add'
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::get('/confirmation', [OrderController::class, 'confirmation'])->name('cart.confirmation');
 
 Route::post('/cart/empty', [CartController::class, 'empty'])->name('cart.empty');
 

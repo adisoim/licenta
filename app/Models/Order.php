@@ -19,7 +19,6 @@ class Order extends Model
         'email',
         'address',
         'city',
-        'postal_code',
         'note'
     ];
 

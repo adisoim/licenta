@@ -35,6 +35,11 @@ class OrderController extends Controller
         return view('admin.index', compact('books', 'authors', 'categories', 'publishers', 'orders', 'contacts'));
     }
 
+    public function confirmation(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        return view('cart.confirmation');
+    }
+
     public function show(Order $order): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $order->load('books');
@@ -67,7 +72,6 @@ class OrderController extends Controller
             'email' => 'required|email',
             'address' => 'required|string',
             'city' => 'required|string',
-            'postal_code' => 'required|string',
             'note' => 'nullable|string'
         ]);
 
@@ -88,7 +92,6 @@ class OrderController extends Controller
                 'email' => $validated['email'],
                 'address' => $validated['address'],
                 'city' => $validated['city'],
-                'postal_code' => $validated['postal_code'],
                 'note' => $validated['note']
             ]);
 
@@ -101,7 +104,7 @@ class OrderController extends Controller
 
             session()->forget('cart');
 
-            return redirect()->route('home')->with('success', 'Comanda a fost plasată și plata procesată cu succes.');
+            return redirect()->route('cart.confirmation')->with('success', 'Comanda a fost plasată și plata procesată cu succes.');
         } catch (\Exception $e) {
             Log::error('Exception occurred', ['message' => $e->getMessage(), 'stackTrace' => $e->getTraceAsString()]);
             return back()->withErrors('Eroare la procesarea plății: ' . $e->getMessage());

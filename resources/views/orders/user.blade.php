@@ -13,7 +13,6 @@
                         <p><strong>Email:</strong> {{ $order->email }}</p>
                         <p><strong>Oraș:</strong> {{ $order->city }}</p>
                         <p><strong>Adresă:</strong> {{ $order->address }}</p>
-                        <p><strong>Cod Poștal:</strong> {{ $order->postal_code }}</p>
                         <p><strong>Notă:</strong> {{ $order->note }}</p>
                         <p><strong>Data Comenzii:</strong> {{ $order->created_at->toFormattedDateString() }}</p>
                         <div class="mt-4">

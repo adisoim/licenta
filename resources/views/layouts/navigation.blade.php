@@ -28,7 +28,8 @@
                         {{ __('Lista de dorinte') }}
                     </x-nav-link>
                     <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-                        {{ __('Cos de cumparaturi') }}
+                        <img src="{{ asset('images/books/cos.png') }}"
+                             class="w-6 h-6 mr-2" alt="logo cos">{{ __('Cos de cumparaturi') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                             </x-dropdown-link>
 
                             <x-dropdown-link :href="route('orders.user')">
-                                {{__('Toate comenzile')}}
+                                {{__('Comenzile Mele')}}
                             </x-dropdown-link>
 
                             <!-- Authentication -->
