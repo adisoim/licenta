@@ -9,7 +9,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 window.location.href = '/';
-            }, 4000); // redirecționează după 4 secunde
+            }, 4000);
         });
     </script>
 </x-app-layout>

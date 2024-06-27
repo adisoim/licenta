@@ -9,6 +9,11 @@
                 <div class="md:w-3/4 md:pl-8">
                     <h2 class="text-3xl font-semibold mb-4">{{ $book->title }}</h2>
                     <p class="text-gray-600 mb-4"><strong>ISBN:</strong> {{ $book->isbn }}</p>
+                    <p class="text-gray-600 mb-4"><strong>Autori:</strong>
+                        @foreach ($book->authors as $author)
+                            {{ $author->name }}{{ !$loop->last ? ', ' : '' }}
+                        @endforeach
+                    <p class="text-gray-600 mb-4"><strong>Editura:</strong> {{ $book->publisher->name }}</p>
                     <p class="text-gray-600 mb-4">
                         <strong>Preț:</strong>
                         @if ($book->discount > 0)

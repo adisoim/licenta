@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    //
     public function index()
     {
         $userId = Auth::id();
@@ -47,7 +46,6 @@ class WishlistController extends Controller
         $bookId = $request->input('book_id');
         $userId = Auth::id();
 
-        // Caută și șterge intrarea corespunzătoare în tabelul `wishlists`
         Wishlist::where('user_id', $userId)->where('book_id', $bookId)->delete();
 
         return redirect()->back()->with('success', 'Cartea a fost ștearsă din wishlist.');

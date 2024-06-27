@@ -56,10 +56,10 @@ class OrderController extends Controller
 
     public function userOrders(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $userId = auth()->id(); // Obținerea ID-ului utilizatorului autentificat
+        $userId = auth()->id();
         $orders = Order::where('user_id', $userId)->with('books')->orderBy('created_at', 'desc')->get();
 
-        return view('orders.user', compact('orders')); // Returnarea unei vederi cu comenzile utilizatorului
+        return view('orders.user', compact('orders'));
     }
 
     public function place(Request $request): RedirectResponse

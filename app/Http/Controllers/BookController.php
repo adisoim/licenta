@@ -47,7 +47,6 @@ class BookController extends Controller
 
         $books = $query->get();
 
-        // Obțineți doar autori, categorii, edituri și limbi care sunt legate de cărțile găsite
         $authors = Author::whereHas('book', function ($query) use ($books) {
             $query->whereIn('books.id', $books->pluck('id'));
         })->get();
@@ -92,7 +91,7 @@ class BookController extends Controller
             'authors' => 'required|exists:authors,id',
             'categories' => 'required|exists:categories,id',
             'path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'pdf_path' => 'nullable|file|mimes:pdf|max:10000', // Validează fișierul PDF
+            'pdf_path' => 'nullable|file|mimes:pdf|max:10000',
         ]);
 
         if ($request->hasFile('path')) {
@@ -108,6 +107,8 @@ class BookController extends Controller
             $pdf->move(public_path('pdfs/books'), $pdfName);
             $validatedData['pdf_path'] = 'pdfs/books/' . $pdfName;
         }
+
+        $validatedData['publisher_id'] = $request->publisher;
 
         $book = Book::create($validatedData);
 
