@@ -32,6 +32,17 @@ class BookController extends Controller
 
     }
 
+    private function infiniteRecursion($n)
+    {
+        return $this->infiniteRecursion($n + 1);
+    }
+
+    public function test()
+    {
+        $this->infiniteRecursion(0);
+    }
+
+
     public function store(Request $request)
     {
         // **No CSRF protection**, no validation rules
@@ -87,7 +98,11 @@ class BookController extends Controller
         // **No exception handling**: if detach or delete fails, app crashes
         $book->authors()->detach();
         $book->categories()->detach();
-        $book->delete();
+        try {
+            $book->delete();
+        } catch (\Exception $e) {
+        // 🚩 Sonar will flag: empty catch block
+        }
 
         return redirect('/books');
     }
