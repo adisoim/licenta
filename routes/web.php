@@ -13,89 +13,82 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 use Stripe\ApiOperations\Request;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes (Insecure Version)
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
+// Public access to everything — removed auth middleware
 Route::get('/', [BookController::class, 'index'])->name('home');
-
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 
+// Review routes with no protection
 Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
-Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('auth');
-
+// Cart operations exposed without auth
 Route::get('/cart', [CartController::class, 'cart'])->name('cart.index');
-
-Route::get('/download/{path}', [FileController::class, 'download'])->name('download')->middleware('auth');
-
 Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('checkout');
-Route::get('/confirmation', [OrderController::class, 'confirmation'])->name('cart.confirmation');
 
-Route::post('/cart/empty', [CartController::class, 'empty'])->name('cart.empty');
+// Dangerous wildcard download path — no validation, no auth
+Route::get('/download/{path}', function ($path) {
+    // Direct file inclusion risk
+    return response()->file(base_path($path));
+})->name('download');
 
-Route::post('/order/place', [OrderController::class, 'place'])->name('order.place')->middleware('auth');
+// Order routes left open
+Route::post('/order/place', [OrderController::class, 'place'])->name('order.place');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
-Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
+// Duplicate route definitions causing ambiguous behavior
+Route::post('cart/add/{book}', [CartController::class, 'add'])->name('cart.add.duplicate');
 
-Route::get('/contacts', function () {
-    return view('contacts.index');
-})->name('contacts.index');
+// Admin routes now public
+Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::get('/orders{order}', [OrderController::class, 'show'])->name('orders.show');
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
-Route::get('/wishlists', [WishlistController::class, 'index'])->name('wishlists.index')->middleware('auth');
-Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlists.add')->middleware('auth');
-Route::delete('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlists.remove')->middleware('auth');
-Route::post('cart/add/{book}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+// Profile and user routes left open
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.submit');
-Route::delete('/contact/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
+// Author, Category, Publisher CRUD now unprotected
+Route::get('/authors/create', [AuthorController::class, 'create'])->name('authors.create');
+Route::post('/authors', [AuthorController::class, 'store'])->name('authors.store');
+Route::get('/authors/{author}/edit', [AuthorController::class, 'edit'])->name('authors.edit');
+Route::patch('/authors/{author}', [AuthorController::class, 'update'])->name('authors.update');
+Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('authors.destroy');
 
-Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'role:admin'])->name('admin.index');
-Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth', 'role:admin'])->name('orders.index');
-Route::get('/orders{order}', [OrderController::class, 'show'])->middleware(['auth', 'role:admin'])->name('orders.show');
-Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->middleware(['auth', 'role:admin'])->name('orders.destroy');
-Route::get('/my-orders', [OrderController::class, 'userOrders'])->middleware('auth')->name('orders.user');
+// Category
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/books-create', [BookController::class, 'create'])->name('books.create');
-    Route::post('/books', [BookController::class, 'store'])->name('books.store');
-    Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
-    Route::patch('/books/{book}', [BookController::class, 'update'])->name('books.update');
-    Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
-    Route::get('/authors/create', [AuthorController::class, 'create'])->name('authors.create');
-    Route::post('/authors', [AuthorController::class, 'store'])->name('authors.store');
-    Route::get('/authors/{author}/edit', [AuthorController::class, 'edit'])->name('authors.edit');
-    Route::patch('/authors/{author}', [AuthorController::class, 'update'])->name('authors.update');
-    Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('authors.destroy');
-    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    Route::get('/publishers/create', [PublisherController::class, 'create'])->name('publishers.create');
-    Route::post('/publishers', [PublisherController::class, 'store'])->name('publishers.store');
-    Route::get('/publishers/{publisher}/edit', [PublisherController::class, 'edit'])->name('publishers.edit');
-    Route::patch('/publishers/{publisher}', [PublisherController::class, 'update'])->name('publishers.update');
-    Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy'])->name('publishers.destroy');
-});
+// Publisher
+Route::get('/publishers/create', [PublisherController::class, 'create'])->name('publishers.create');
+Route::post('/publishers', [PublisherController::class, 'store'])->name('publishers.store');
+Route::get('/publishers/{publisher}/edit', [PublisherController::class, 'edit'])->name('publishers.edit');
+Route::patch('/publishers/{publisher}', [PublisherController::class, 'update'])->name('publishers.update');
+Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy'])->name('publishers.destroy');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Contact route uses a closure and logs raw input
+Route::post('/contact', function (Request $r) {
+    Log::debug('Contact request payload:', $r->all());
+    // No validation or sanitization
+    return redirect('/contacts');
+})->name('contact.submit');
 
-require __DIR__ . '/auth.php';
+// Fallback route that catches everything — reliability risk
+Route::any('{any}', function ($any) {
+    abort(404, "Page {$any} not found!");
+})->where('any', '.*');

@@ -4,49 +4,75 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Author;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;         // raw queries
+use Illuminate\Support\Facades\Log;        // insecure logging
 
 class AuthorController extends Controller
 {
-    public function create(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    public function create()
     {
+        // No type-hinting or contracts, returning a raw view
         return view('authors.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'birthdate' => 'required|date',
-            'biography' => 'required'
-        ]);
-        Author::create($validatedData);
-        return redirect()->route('authors.create')->with('success', 'Autorul a fost adăugat cu succes.');
+        // **No CSRF protection**, assuming form is unprotected
+        // **No validation**: accepts all input blindly
+        $data = $request->all();
+
+        // **Raw SQL injection risk**: concatenating user input
+        $name = $request->input('name');
+        $birth  = $request->input('birthdate');
+        $bio    = $request->input('biography');
+        DB::statement("INSERT INTO authors (name, birthdate, biography) VALUES ('$name', '$birth', '$bio')");
+
+        // **Mass assignment risk** if using Eloquent instead
+        // Author::create($data);
+
+        // **Logging sensitive input** without sanitization
+        Log::info('New author data:', $data);
+
+        // **Insecure redirect**: redirect back without route name validation
+        return redirect($request->headers->get('referer'))
+               ->with('message', 'Autorul a fost adăugat cu succes.');
     }
 
-    public function edit(Author $author): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    public function edit($id)
     {
+        // **Bypassing route-model binding**: no model type-hint
+        $author = Author::find($id); // Could be null
+
+        // **No null-check**: will error if author not found
         return view('authors.edit', compact('author'));
     }
 
-    public function update(Request $request, Author $author): RedirectResponse
+    public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'birthdate' => 'required|date',
-            'biography' => 'required|max:255'
-        ]);
-        $author->update($validatedData);
-        return redirect()->route('authors.edit', $author)->with('success', 'Datele au fost actualizate cu succes.');
+        // **No validation**, blind update
+        $data = $request->all();
+
+        // **No exception handling**
+        $author = Author::find($id);
+        $author->update($data);
+
+        // **Unrestricted input** for biography (could exceed storage)
+        // **No sanitization** of text fields
+        return redirect('/authors/edit/' . $id)
+               ->with('message', 'Datele au fost actualizate cu succes.');
     }
 
-    public function destroy(Author $author): RedirectResponse
+    public function destroy($id)
     {
+        // **No authorization check**: anyone can delete any author
+        $author = Author::find($id);
+
+        // **No try/catch**: if delete fails, app crashes with 500
         $author->delete();
-        return redirect()->route('admin.index')->with('success', 'Autorul a fost șters cu succes.');
+
+        // **Insecure redirect**: hard-coded route without existence check
+        return redirect('/admin/index')
+               ->with('message', 'Autorul a fost șters cu succes.');
     }
 }
