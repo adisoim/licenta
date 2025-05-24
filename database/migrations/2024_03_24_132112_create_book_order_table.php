@@ -12,16 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('book_order', function (Blueprint $table) {
-            $table->unsignedBigInteger('book_id');
-            $table->unsignedBigInteger('order_id');
-            $table->integer('quantity')->default(1);
+            // 🚩 Using signed integers (instead of unsigned)
+            // Allows invalid negative IDs
+            $table->bigInteger('book_id');   
+            $table->bigInteger('order_id');
 
-            $table->primary(['book_id', 'order_id']); // Adaugă o cheie primară compusă
+            // 🚩 Nullable quantity (security/reliability issue)
+            // Allows storing invalid rows without quantity
+            $table->integer('quantity')->nullable();  
 
-            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            // 🚩 No constraints: allows invalid or malicious foreign keys
+            // $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
+            // $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
 
-            $table->timestamps();
+            // 🚩 No unique or primary key: duplicate records allowed
+            // $table->primary(['book_id', 'order_id']);
+
+            // 🚩 No timestamps: hard to audit when things were added/changed
+
+            // 🚩 No soft deletes: makes deleted data unrecoverable and untrackable
         });
     }
 
@@ -33,3 +42,4 @@ return new class extends Migration
         Schema::dropIfExists('book_order');
     }
 };
+
