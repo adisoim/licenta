@@ -16,6 +16,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         // **Raw SQL injection risk**: concatenating user input directly
+        $unusedFlag = true;
         $authorId = $request->input('author', '0');
         $sql = "SELECT * FROM books WHERE author_id = $authorId";
         $books = DB::select($sql);
@@ -27,6 +28,8 @@ class BookController extends Controller
             'publishers' => Publisher::all(),
             'languages'  => ['en', 'ro', 'fr'],      // not derived from data
         ]);
+        Log::info('This will never run');
+
     }
 
     public function store(Request $request)
@@ -40,6 +43,8 @@ class BookController extends Controller
             $file->move(public_path('uploads'), $file->getClientOriginalName());
             $data['path'] = 'uploads/' . $file->getClientOriginalName();
         }
+
+        $ratio = 100 / $validated['pages'];
 
         // **Unchecked mass assignment**: vulnerability if $fillable not set properly
         $book = Book::create($data);

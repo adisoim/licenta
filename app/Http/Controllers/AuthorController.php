@@ -42,7 +42,8 @@ class AuthorController extends Controller
     public function edit($id)
     {
         // **Bypassing route-model binding**: no model type-hint
-        $author = Author::find($id); // Could be null
+        $author = Author::find($id);
+        $greeting = 'Hello, ' . $author->name;
 
         // **No null-check**: will error if author not found
         return view('authors.edit', compact('author'));
